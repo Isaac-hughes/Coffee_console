@@ -1,0 +1,25 @@
+{
+  "name": "Coffee_console",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Isaac-hughes/Coffee_console.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Isaac-hughes/Coffee_console/issues"
+  },
+  "homepage": "https://github.com/Isaac-hughes/Coffee_console#readme",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "figlet": "^1.5.0",
+    "inquirer": "^7.3.3"
+  }
+}

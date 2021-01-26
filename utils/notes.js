@@ -6,6 +6,11 @@ const addNote = (type, size, extras) => {
     saveNotes(allNotes);
 }
 
+const clearAll = () => {
+    const arr = [];
+    saveNotes(arr);
+}
+
 const loadNotes = ()  => {
     try{
         const dataBuffer = fs.readFileSync("src/notes.json");
@@ -34,8 +39,9 @@ const removeNote = noteToDelete => {
     const allNotes = loadNotes()
 
     try {
-        const removedItem = allNotes.splice(noteToDelete - 1, 1)
-        console.log(`Successfully removed ${removedItem[0].reminder}`);
+        console.log(noteToDelete)
+        const removedItem = allNotes.splice(noteToDelete.remove - 1, 1)
+        console.log(`Successfully removed ${removedItem[0].type}`);
     } catch (error){
         console.log("Number out of range");
     }
@@ -46,5 +52,6 @@ module.exports = {
     loadNotes,
     addNote,
     listNotes,
-    removeNote
+    removeNote,
+    clearAll
 }

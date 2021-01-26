@@ -1,7 +1,7 @@
 const figlet = require("figlet");
 const inquirer = require("inquirer");
 const chalk = require("chalk")
-const { addNote, removeNote, listNotes } = require("../utils/notes")
+const { addNote, removeNote, listNotes, clearAll } = require("../utils/notes")
 
 const topLevelQuestion = [
     {type: "list",
@@ -26,6 +26,13 @@ const extrasQuestion = [
 ]
 
 const removeQuestion = [
+    {type: "list",
+    name: "options",
+    message: "Would you like to clear the list?",
+    choices: ["Yes", "No"]}
+]
+
+const removeOneQuestion = [
     {type: 'number', name: 'remove', message: "Which coffee would you lke to remove"}
 ]
 
@@ -49,7 +56,12 @@ const app = async () => {
     }else if (answers.options == "remove"){
         listNotes()
         const answer = await inquirer.prompt(removeQuestion)
-        removeNote(answer)
+        if (answer.options == "Yes"){
+            clearAll()
+        }else if (answer.options == "No"){
+            const removeAnswer = await inquirer.prompt(removeOneQuestion)
+            removeNote(removeAnswer)
+        }
         app()
     }else if (answers.options == "exit"){
         console.log("Bye for now")

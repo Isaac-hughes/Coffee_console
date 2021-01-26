@@ -39,7 +39,6 @@ const removeNote = noteToDelete => {
     const allNotes = loadNotes()
 
     try {
-        console.log(noteToDelete)
         const removedItem = allNotes.splice(noteToDelete.remove - 1, 1)
         console.log(`Successfully removed ${removedItem[0].type}`);
     } catch (error){

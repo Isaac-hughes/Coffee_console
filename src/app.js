@@ -86,13 +86,18 @@ const app = async () => {
                 const removeAnswer = await inquirer.prompt(removeOneQuestion)
                 const object = await Coffee.find({});
                 let num = removeAnswer.remove - 1
-                console.log(object, num)
+                let arr = []
+                for (i in object){
+                    arr.push(object[i]._id)
+                }
+                let res = arr[num]
+                await Coffee.deleteOne({_id: `${res}`})
+                console.log("deleted")
                 
-                // let deleted = await Coffee.deleteOne([num])
-                // console.log(deleted)
             }
         } catch (error){
             console.log("Error trying to remove item(s)")
+            console.log(error)
         }
         app()
     }else if (answers.options == "exit"){

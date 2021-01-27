@@ -1,6 +1,8 @@
+require('./db/connection');
 const figlet = require("figlet");
 const inquirer = require("inquirer");
 const chalk = require("chalk")
+const { Coffee } = require("./models/Coffee")
 const { addNote, removeNote, listNotes, clearAll } = require("../utils/notes")
 
 const topLevelQuestion = [
@@ -47,12 +49,30 @@ const app = async () => {
         const addAnswer = await inquirer.prompt(addQuestion)
         const sizeAnswer = await inquirer.prompt(sizeQuestion)
         const extrasAnswer = await inquirer.prompt(extrasQuestion)
-        addNote(addAnswer.add, sizeAnswer.options, extrasAnswer.extras)
+        try {
+            const coffee = new Coffee({ type: addAnswer.add, size: sizeAnswer.options, extras: extrasAnswer.extras})
+            await coffee.save()
+        } catch (error){
+            console.log("An issue occurred while trying to add a new coffee to the database")
+        }
         console.log(` Added a ${addAnswer.add}, size ${sizeAnswer.options}, with ${extrasAnswer.extras}`)
         app()
     }else if (answers.options == "list"){
-        listNotes()
+        try{
+            const everything = await Coffee.find({});
+            for (i in everything){
+                let t = everything[i].type
+                let s = everything[i].size
+                let e = everything[i].extras
+                let num = (parseInt(i)) + 1
+                console.log(`
+                ${num}. Order: ${t}, Size: ${s}, Extras: ${e}`)
+            }
+        } catch (error){
+            console.log("Error trying to return the list")
+        }
         app()
+
     }else if (answers.options == "remove"){
         listNotes()
         const answer = await inquirer.prompt(removeQuestion)

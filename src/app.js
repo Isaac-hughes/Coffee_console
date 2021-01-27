@@ -3,7 +3,6 @@ const figlet = require("figlet");
 const inquirer = require("inquirer");
 const chalk = require("chalk")
 const { Coffee } = require("./models/Coffee")
-const { addNote, removeNote, listNotes, clearAll } = require("../utils/notes")
 
 const topLevelQuestion = [
     {type: "list",
@@ -43,6 +42,22 @@ const main = () => {
     app() 
 };
 
+const listItems = async () => {
+    try{
+        const everything = await Coffee.find({});
+        for (i in everything){
+            let t = everything[i].type
+            let s = everything[i].size
+            let e = everything[i].extras
+            let num = (parseInt(i)) + 1
+            console.log(`
+            ${num}. Order: ${t}, Size: ${s}, Extras: ${e}`)
+        }
+    } catch (error){
+        console.log("Error trying to return the list")
+    }
+}
+
 const app = async () => {
     const answers = await inquirer.prompt(topLevelQuestion)
     if (answers.options == "add"){
@@ -58,29 +73,26 @@ const app = async () => {
         console.log(` Added a ${addAnswer.add}, size ${sizeAnswer.options}, with ${extrasAnswer.extras}`)
         app()
     }else if (answers.options == "list"){
+        listItems()
+        app()
+    }else if (answers.options == "remove"){
         try{
-            const everything = await Coffee.find({});
-            for (i in everything){
-                let t = everything[i].type
-                let s = everything[i].size
-                let e = everything[i].extras
-                let num = (parseInt(i)) + 1
-                console.log(`
-                ${num}. Order: ${t}, Size: ${s}, Extras: ${e}`)
+            const answer = await inquirer.prompt(removeQuestion)
+            listItems()
+            if (answer.options == "Yes"){
+                await Coffee.deleteMany();
+                console.log("The list has been cleared")
+            }else if (answer.options == "No"){
+                const removeAnswer = await inquirer.prompt(removeOneQuestion)
+                const object = await Coffee.find({});
+                let num = removeAnswer.remove - 1
+                console.log(object, num)
+                
+                // let deleted = await Coffee.deleteOne([num])
+                // console.log(deleted)
             }
         } catch (error){
-            console.log("Error trying to return the list")
-        }
-        app()
-
-    }else if (answers.options == "remove"){
-        listNotes()
-        const answer = await inquirer.prompt(removeQuestion)
-        if (answer.options == "Yes"){
-            clearAll()
-        }else if (answer.options == "No"){
-            const removeAnswer = await inquirer.prompt(removeOneQuestion)
-            removeNote(removeAnswer)
+            console.log("Error trying to remove item(s)")
         }
         app()
     }else if (answers.options == "exit"){
